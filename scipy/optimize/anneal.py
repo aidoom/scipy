@@ -100,11 +100,13 @@ class fast_sa(base_schedule):
 
     def update_guess(self, x0):
         x0 = asarray(x0)
-        u = squeeze(random.uniform(0.0, 1.0, size=self.dims))
-        T = self.T
-        y = sign(u-0.5)*T*((1+1.0/T)**abs(2*u-1)-1.0)
-        xc = y*(self.upper - self.lower)
-        xnew = x0 + xc
+        while unbounded:
+            u = squeeze(random.uniform(0.0, 1.0, size=self.dims))
+            y = sign(u-0.5)*T*((1+1.0/T)**abs(2*u-1)-1.0)
+            xc = y*(self.upper - self.lower)
+            xnew = x0 + xc
+            if (xnew < self.upper).all() and (xnew > self.lower).all():
+                unbounded = False
         return xnew
 
     def update_temp(self):
